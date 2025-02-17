@@ -1,8 +1,8 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import PokemonList from './components/PokemonList';
-import PokemonDetail from './components/PokemonDetail';
+import PokemonDetail from './components/PokemonDetail.tsx';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -14,7 +14,14 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>(() => {
+    const saved = localStorage.getItem('viewMode');
+    return (saved as 'grid' | 'list') || 'grid';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('viewMode', viewMode);
+  }, [viewMode]);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -22,9 +29,9 @@ function App() {
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
           <nav className="sticky top-0 z-10 backdrop-blur-sm bg-white/75 dark:bg-gray-800/75 shadow-lg">
             <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-              <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500">
+              <Link to="/" className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500">
                 Pokédex
-              </h1>
+              </Link>
               <div className="flex gap-2 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg">
                 <button
                   onClick={() => setViewMode('grid')}

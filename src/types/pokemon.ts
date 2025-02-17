@@ -10,6 +10,26 @@ export interface NamedAPIResource {
   url: string;
 }
 
+export interface PokemonSpecies {
+  id: number;
+  name: string;
+  order: number;
+  gender_rate: number;
+  capture_rate: number;
+  base_happiness: number;
+  is_baby: boolean;
+  is_legendary: boolean;
+  is_mythical: boolean;
+  hatch_counter: number;
+  varieties: PokemonVariety[];
+  generation: NamedAPIResource;
+}
+
+export interface PokemonVariety {
+  is_default: boolean;
+  pokemon: NamedAPIResource;
+}
+
 export interface Pokemon {
   id: number;
   name: string;
@@ -33,11 +53,22 @@ export interface Pokemon {
     effort: number;
     stat: NamedAPIResource;
   }[];
+  species?: PokemonSpecies;
 }
 
 export interface Generation {
   id: number;
   name: string;
-  pokemon_species: NamedAPIResource[];
+  abilities: NamedAPIResource[];
   main_region: NamedAPIResource;
+  moves: NamedAPIResource[];
+  pokemon_species: NamedAPIResource[];
+  types: NamedAPIResource[];
+  version_groups: NamedAPIResource[];
+  names: Name[];
+}
+
+interface Name {
+  name: string;
+  language: NamedAPIResource;
 }
