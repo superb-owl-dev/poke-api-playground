@@ -54,6 +54,8 @@ export interface Pokemon {
     stat: NamedAPIResource;
   }[];
   species?: PokemonSpecies;
+  is_default?: boolean;
+  variants?: Pokemon[];
 }
 
 export interface Generation {
