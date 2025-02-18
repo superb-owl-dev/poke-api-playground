@@ -116,22 +116,30 @@ function PokemonContent({
             Previous
           </button>
           
-          {[...Array(Math.min(5, totalPages))].map((_, i) => {
-            const pageNum = Math.min(Math.max(1, page - 2 + i), totalPages);
-            return (
-              <button
-                key={pageNum}
-                onClick={() => onPageChange(pageNum)}
-                className={`px-4 py-2 rounded-lg ${
-                  pageNum === page
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
-                } transition-colors`}
-              >
-                {pageNum}
-              </button>
-            );
-          })}
+          {(() => {
+            const pageNumbers = [];
+            const maxPages = Math.min(5, totalPages);
+            const start = Math.max(1, Math.min(page - Math.floor(maxPages / 2), totalPages - maxPages + 1));
+            
+            for (let i = 0; i < maxPages; i++) {
+              const pageNum = start + i;
+              pageNumbers.push(
+                <button
+                  key={pageNum}
+                  onClick={() => onPageChange(pageNum)}
+                  className={`px-4 py-2 rounded-lg ${
+                    pageNum === page
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  } transition-colors`}
+                >
+                  {pageNum}
+                </button>
+              );
+            }
+            return pageNumbers;
+          })()}
+          
           <button
             onClick={() => onPageChange(Math.min(totalPages, page + 1))}
             disabled={page >= totalPages}
