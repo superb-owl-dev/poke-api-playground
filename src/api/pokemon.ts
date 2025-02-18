@@ -1,40 +1,12 @@
 import axios, { AxiosError } from 'axios';
-import { PaginatedResponse, Pokemon, Generation, PokemonSpecies } from '../types/pokemon';
+import { PaginatedResponse, Pokemon, Generation, PokemonSpecies, NamedAPIResource } from '../types/pokemon';
 
 const BASE_URL = 'https://pokeapi.co/api/v2';
-
-const getBaseSpeciesName = (name: string) => {
-  // Handle Nidoran special cases - convert from symbol to -m/-f format
-  if (name.includes('♂')) {
-    return 'nidoran-m';
-  }
-  if (name.includes('♀')) {
-    return 'nidoran-f';
-  }
-  if (name === 'nidoran') {
-    // Default to male if no gender specified
-    return 'nidoran-m';
-  }
-  
-  // Handle other form cases like wormadam-plant, giratina-origin, etc.
-  return name.split('-')[0];
-};
-
-const getPokemonSpeciesId = async (idOrName: string | number) => {
-  // First try to get the Pokemon data to get its species ID
-  try {
-    const response = await axios.get<Pokemon>(`${BASE_URL}/pokemon/${idOrName}`);
-    return response.data.species?.url?.split('/').filter(Boolean).pop() || idOrName;
-  } catch {
-    // If that fails, the input might already be a species ID/name
-    return idOrName;
-  }
-};
 
 export const api = {
   getPokemons: async (page: number = 1, limit: number = 20) => {
     const offset = (page - 1) * limit;
-    const response = await axios.get<PaginatedResponse<{ name: string; url: string }>>(`${BASE_URL}/pokemon`, {
+    const response = await axios.get<PaginatedResponse<NamedAPIResource>>(`${BASE_URL}/pokemon`, {
       params: { offset, limit }
     });
     return response.data;
@@ -45,11 +17,10 @@ export const api = {
       // First get the Pokemon data
       const pokemonResponse = await axios.get<Pokemon>(`${BASE_URL}/pokemon/${idOrName}`);
       
-      // Then get the species data using the Pokemon's species URL
-      const speciesUrl = pokemonResponse.data.species?.url;
-      if (!speciesUrl) throw new Error(`No species URL found for Pokemon ${idOrName}`);
+      // Get the species ID from the Pokemon response
+      const speciesId = pokemonResponse.data.species?.name;
+      if (!speciesId) throw new Error(`No species found for Pokemon ${idOrName}`);
       
-      const speciesId = speciesUrl.split('/').filter(Boolean).pop();
       const speciesResponse = await axios.get<PokemonSpecies>(`${BASE_URL}/pokemon-species/${speciesId}`);
       
       // Get all variants including the default one
