@@ -1,3 +1,11 @@
+> ⚠️ **WARNING: This is _NOT_ the SDK Repository!**
+>
+> This repository contains a demo Pokédex application. For the actual SDK implementation, please visit:
+> https://github.com/superb-owl-dev/poke-api-sdk
+>
+> ---
+
+
 # Pokédex React Application
 
 A modern, responsive Pokédex web application built with React, TypeScript, and Vite. This application demonstrates integration with the PokéAPI (v2) to showcase Pokémon data with various viewing and filtering options.
